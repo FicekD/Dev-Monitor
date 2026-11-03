@@ -1,0 +1,91 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Light">
+      <Color x:Key="CanvasColor">#E6EAEE</Color>
+      <Color x:Key="SheetColor">#F7F9FB</Color>
+      <Color x:Key="SunkenColor">#EBEFF3</Color>
+      <Color x:Key="RuleColor">#D5DCE3</Color>
+      <Color x:Key="InkColor">#18212B</Color>
+      <Color x:Key="InkMutedColor">#5B6876</Color>
+      <Color x:Key="InkFaintColor">#8A96A3</Color>
+      <Color x:Key="AccentColor">#11707F</Color>
+      <Color x:Key="AccentSoftColor">#C9DFE3</Color>
+      <Color x:Key="WarningColor">#FAB219</Color>
+      <Color x:Key="WarningTextColor">#8A5A00</Color>
+      <Color x:Key="CriticalColor">#D03B3B</Color>
+      <Color x:Key="CriticalTextColor">#B42F2F</Color>
+
+      <Color x:Key="Series1Color">#2A78D6</Color>
+      <Color x:Key="Series2Color">#EB6834</Color>
+      <Color x:Key="Series3Color">#1BAF7A</Color>
+      <Color x:Key="Series4Color">#EDA100</Color>
+      <Color x:Key="Series5Color">#E87BA4</Color>
+      <Color x:Key="Series6Color">#008300</Color>
+      <Color x:Key="Series7Color">#6250D6</Color>
+      <Color x:Key="Series8Color">#E34948</Color>
+    </ResourceDictionary>
+
+    <ResourceDictionary x:Key="Dark">
+      <Color x:Key="CanvasColor">#151B22</Color>
+      <Color x:Key="SheetColor">#1C232C</Color>
+      <Color x:Key="SunkenColor">#252E39</Color>
+      <Color x:Key="RuleColor">#2F3944</Color>
+      <Color x:Key="InkColor">#E3E8ED</Color>
+      <Color x:Key="InkMutedColor">#97A3B0</Color>
+      <Color x:Key="InkFaintColor">#6B7784</Color>
+      <Color x:Key="AccentColor">#4BB0BF</Color>
+      <Color x:Key="AccentSoftColor">#2A4952</Color>
+      <Color x:Key="WarningColor">#FAB219</Color>
+      <Color x:Key="WarningTextColor">#F2C14E</Color>
+      <Color x:Key="CriticalColor">#D03B3B</Color>
+      <Color x:Key="CriticalTextColor">#F07B7B</Color>
+
+      <Color x:Key="Series1Color">#3987E5</Color>
+      <Color x:Key="Series2Color">#D95926</Color>
+      <Color x:Key="Series3Color">#199E70</Color>
+      <Color x:Key="Series4Color">#C98500</Color>
+      <Color x:Key="Series5Color">#D55181</Color>
+      <Color x:Key="Series6Color">#008300</Color>
+      <Color x:Key="Series7Color">#9085E9</Color>
+      <Color x:Key="Series8Color">#E66767</Color>
+    </ResourceDictionary>
+  </ResourceDictionary.ThemeDictionaries>
+
+  <SolidColorBrush x:Key="CanvasBrush" Color="{DynamicResource CanvasColor}" />
+  <SolidColorBrush x:Key="SheetBrush" Color="{DynamicResource SheetColor}" />
+  <SolidColorBrush x:Key="SunkenBrush" Color="{DynamicResource SunkenColor}" />
+  <SolidColorBrush x:Key="RuleBrush" Color="{DynamicResource RuleColor}" />
+  <SolidColorBrush x:Key="InkBrush" Color="{DynamicResource InkColor}" />
+  <SolidColorBrush x:Key="InkMutedBrush" Color="{DynamicResource InkMutedColor}" />
+  <SolidColorBrush x:Key="InkFaintBrush" Color="{DynamicResource InkFaintColor}" />
+  <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource AccentColor}" />
+  <SolidColorBrush x:Key="AccentSoftBrush" Color="{DynamicResource AccentSoftColor}" />
+  <SolidColorBrush x:Key="WarningBrush" Color="{DynamicResource WarningColor}" />
+  <SolidColorBrush x:Key="WarningTextBrush" Color="{DynamicResource WarningTextColor}" />
+  <SolidColorBrush x:Key="CriticalBrush" Color="{DynamicResource CriticalColor}" />
+  <SolidColorBrush x:Key="CriticalTextBrush" Color="{DynamicResource CriticalTextColor}" />
+
+  <FontFamily x:Key="TextFont">avares://DevMonitor/Assets/Fonts#Barlow</FontFamily>
+  <FontFamily x:Key="NumeralFont">avares://DevMonitor/Assets/Fonts#Barlow Semi Condensed</FontFamily>
+  <FontFamily x:Key="ContentControlThemeFontFamily">avares://DevMonitor/Assets/Fonts#Barlow</FontFamily>
+  <CornerRadius x:Key="ControlCornerRadius">6</CornerRadius>
+  <CornerRadius x:Key="OverlayCornerRadius">8</CornerRadius>
+
+  <GridLength x:Key="LabelColumnWidth">132</GridLength>
+  <GridLength x:Key="ValueColumnWidth">140</GridLength>
+  <GridLength x:Key="DetailColumnWidth">148</GridLength>
+  <x:Double x:Key="ContentMaxWidth">960</x:Double>
+
+  <StreamGeometry x:Key="IconOverview">M3.5,3.5 H8.5 V8.5 H3.5 Z M11.5,3.5 H16.5 V8.5 H11.5 Z M3.5,11.5 H8.5 V16.5 H3.5 Z M11.5,11.5 H16.5 V16.5 H11.5 Z</StreamGeometry>
+  <StreamGeometry x:Key="IconLimits">M3,14.5 A7,7 0 1 1 17,14.5 M10,14.5 L13.25,9</StreamGeometry>
+  <StreamGeometry x:Key="IconActions">M10,2.75 A7.25,7.25 0 1 1 9.99,2.75 Z M8.25,7 L13,10 L8.25,13 Z</StreamGeometry>
+  <StreamGeometry x:Key="IconHardware">M8.5,4 A1.5,1.5 0 0 1 11.5,4 V11.2 A3.25,3.25 0 1 1 8.5,11.2 Z M10,8 V13.5</StreamGeometry>
+  <StreamGeometry x:Key="IconSettings">M3,6 H17 M3,14 H17 M7,4 V8 M13,12 V16</StreamGeometry>
+  <StreamGeometry x:Key="IconChevron">M7.5,4.5 L13,10 L7.5,15.5</StreamGeometry>
+  <StreamGeometry x:Key="IconMinimize">M0,5.5 H10</StreamGeometry>
+  <StreamGeometry x:Key="IconMaximize">M0.5,0.5 H9.5 V9.5 H0.5 Z</StreamGeometry>
+  <StreamGeometry x:Key="IconRestore">M2.5,0.5 H9.5 V7.5 M0.5,2.5 H7.5 V9.5 H0.5 Z</StreamGeometry>
+  <StreamGeometry x:Key="IconClose">M0.5,0.5 L9.5,9.5 M9.5,0.5 L0.5,9.5</StreamGeometry>
+  <StreamGeometry x:Key="IconWarning">M10,3.25 L17.25,16.25 H2.75 Z M10,8.25 V11.5 M10,13.75 V13.9</StreamGeometry>
+</ResourceDictionary>

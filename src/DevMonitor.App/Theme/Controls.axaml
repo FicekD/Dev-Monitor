@@ -1,0 +1,305 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:DevMonitor.App.Controls">
+
+  <ControlTheme x:Key="{x:Type c:Meter}" TargetType="c:Meter">
+    <Setter Property="Height" Value="18" />
+    <Setter Property="TrackBrush" Value="{DynamicResource SunkenBrush}" />
+    <Setter Property="FillBrush" Value="{DynamicResource AccentBrush}" />
+    <Setter Property="WarningBrush" Value="{DynamicResource WarningBrush}" />
+    <Setter Property="CriticalBrush" Value="{DynamicResource CriticalBrush}" />
+    <Setter Property="PaceBrush" Value="{DynamicResource InkBrush}" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="c:Meter.Value" Duration="0:0:0.45" Easing="CubicEaseOut" />
+        <DoubleTransition Property="c:Meter.Pace" Duration="0:0:0.45" Easing="CubicEaseOut" />
+      </Transitions>
+    </Setter>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type c:RangeBar}" TargetType="c:RangeBar">
+    <Setter Property="Height" Value="18" />
+    <Setter Property="TrackBrush" Value="{DynamicResource SunkenBrush}" />
+    <Setter Property="RangeBrush" Value="{DynamicResource AccentSoftBrush}" />
+    <Setter Property="CurrentBrush" Value="{DynamicResource InkBrush}" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="c:RangeBar.Current" Duration="0:0:0.45" Easing="CubicEaseOut" />
+      </Transitions>
+    </Setter>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type c:InstrumentRow}" TargetType="c:InstrumentRow">
+    <Setter Property="MinHeight" Value="44" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid Background="{TemplateBinding Background}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+            <ColumnDefinition Width="{StaticResource ValueColumnWidth}" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="{StaticResource DetailColumnWidth}" />
+          </Grid.ColumnDefinitions>
+          <TextBlock Text="{TemplateBinding Label}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Path Name="PART_Alert" Classes="icon small" Data="{StaticResource IconWarning}" IsVisible="False" VerticalAlignment="Center" />
+            <TextBlock Classes="numeral" Text="{TemplateBinding ValueText}" VerticalAlignment="Center" />
+            <TextBlock Classes="unit" Text="{TemplateBinding Unit}" VerticalAlignment="Center" Margin="0,4,0,0" />
+          </StackPanel>
+          <ContentPresenter Grid.Column="2" Margin="24,0" VerticalAlignment="Center" Content="{TemplateBinding Content}" />
+          <TextBlock Grid.Column="3" Classes="muted" Text="{TemplateBinding Detail}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^:warning /template/ Path#PART_Alert">
+      <Setter Property="IsVisible" Value="True" />
+      <Setter Property="Stroke" Value="{DynamicResource WarningTextBrush}" />
+    </Style>
+    <Style Selector="^:critical /template/ Path#PART_Alert">
+      <Setter Property="IsVisible" Value="True" />
+      <Setter Property="Stroke" Value="{DynamicResource CriticalTextBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type c:FieldRow}" TargetType="c:FieldRow">
+    <Setter Property="MinHeight" Value="40" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <TextBlock Text="{TemplateBinding Label}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+          <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{TemplateBinding Content}" />
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type c:Notice}" TargetType="c:Notice">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{DynamicResource SunkenBrush}" CornerRadius="6" Padding="12,10">
+          <Grid ColumnDefinitions="Auto,*">
+            <Path Name="PART_Icon" Classes="icon small" Data="{StaticResource IconWarning}"
+                  Stroke="{DynamicResource WarningTextBrush}" VerticalAlignment="Top" Margin="0,1,10,0" />
+            <TextBlock Grid.Column="1" Text="{TemplateBinding Text}" TextWrapping="Wrap" />
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^:critical /template/ Path#PART_Icon">
+      <Setter Property="Stroke" Value="{DynamicResource CriticalTextBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type c:Section}" TargetType="c:Section">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel>
+          <Grid ColumnDefinitions="*,Auto" MinHeight="32">
+            <TextBlock Classes="heading" Text="{TemplateBinding Title}" VerticalAlignment="Center" />
+            <ContentPresenter Grid.Column="1" VerticalAlignment="Center" Content="{TemplateBinding Actions}" />
+          </Grid>
+          <StackPanel Name="PART_StatusLine" Orientation="Horizontal" Spacing="6" IsVisible="False">
+            <Path Name="PART_StaleIcon" Classes="icon small" Data="{StaticResource IconWarning}"
+                  Stroke="{DynamicResource WarningTextBrush}" IsVisible="False" />
+            <TextBlock Name="PART_Status" Classes="caption" Text="{TemplateBinding Status}" VerticalAlignment="Center" />
+          </StackPanel>
+          <c:Notice Name="PART_Error" IsCritical="True" Text="{TemplateBinding Error}" IsVisible="False" Margin="0,10,0,0" />
+          <ContentPresenter Margin="0,14,0,0" Content="{TemplateBinding Content}" />
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^:status /template/ StackPanel#PART_StatusLine">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:stale /template/ Path#PART_StaleIcon">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:stale /template/ TextBlock#PART_Status">
+      <Setter Property="Foreground" Value="{DynamicResource WarningTextBrush}" />
+    </Style>
+    <Style Selector="^:error /template/ c|Notice#PART_Error">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type c:NavButton}" TargetType="c:NavButton">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
+    <Setter Property="Height" Value="40" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Root" Background="{TemplateBinding Background}" CornerRadius="8"
+                Padding="{TemplateBinding Padding}" BorderThickness="2" BorderBrush="Transparent">
+          <Grid ColumnDefinitions="Auto,*">
+            <Path Classes="icon" Data="{TemplateBinding Icon}" Stroke="{TemplateBinding Foreground}" VerticalAlignment="Center" />
+            <ContentPresenter Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center"
+                              Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" />
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.12" />
+      </Transitions>
+    </Setter>
+    <Style Selector="^:pointerover">
+      <Setter Property="Background" Value="{DynamicResource SunkenBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+    </Style>
+    <Style Selector="^:checked">
+      <Setter Property="Background" Value="{DynamicResource SheetBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+    </Style>
+    <Style Selector="^:checked /template/ Path">
+      <Setter Property="Stroke" Value="{DynamicResource AccentBrush}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_Root">
+      <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type c:CaptionButton}" TargetType="c:CaptionButton">
+    <Setter Property="Width" Value="46" />
+    <Setter Property="Height" Value="36" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}">
+          <Path Data="{TemplateBinding Icon}" Stroke="{TemplateBinding Foreground}" StrokeThickness="1"
+                Width="10" Height="10" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^:pointerover">
+      <Setter Property="Background" Value="{DynamicResource SunkenBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+    </Style>
+    <Style Selector="^.close:pointerover">
+      <Setter Property="Background" Value="#C42B1C" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="GroupHeaderTheme" TargetType="ToggleButton">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="8,8" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Root" Background="{TemplateBinding Background}" CornerRadius="6"
+                Padding="{TemplateBinding Padding}" BorderThickness="2" BorderBrush="Transparent">
+          <Grid ColumnDefinitions="Auto,*">
+            <Path Name="PART_Chevron" Classes="icon small" Data="{StaticResource IconChevron}" Margin="0,0,10,0"
+                  RenderTransformOrigin="50%,50%" VerticalAlignment="Center">
+              <Path.Transitions>
+                <Transitions>
+                  <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+                </Transitions>
+              </Path.Transitions>
+              <Path.RenderTransform>rotate(0deg)</Path.RenderTransform>
+            </Path>
+            <ContentPresenter Grid.Column="1" Content="{TemplateBinding Content}" VerticalAlignment="Center" />
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^:pointerover">
+      <Setter Property="Background" Value="{DynamicResource SunkenBrush}" />
+    </Style>
+    <Style Selector="^:checked /template/ Path#PART_Chevron">
+      <Setter Property="RenderTransform" Value="rotate(90deg)" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_Root">
+      <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type Expander}" TargetType="Expander">
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel>
+          <ToggleButton Theme="{StaticResource GroupHeaderTheme}" Content="{TemplateBinding Header}"
+                        IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}" />
+          <ContentPresenter Content="{TemplateBinding Content}" IsVisible="{TemplateBinding IsExpanded}" Margin="34,2,0,10" />
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <ControlTheme x:Key="SegmentItemTheme" TargetType="ListBoxItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
+    <Setter Property="Padding" Value="12,4" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Root" Background="{TemplateBinding Background}" CornerRadius="6"
+                Padding="{TemplateBinding Padding}" BorderThickness="2" BorderBrush="Transparent">
+          <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Center" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.12" />
+      </Transitions>
+    </Setter>
+    <Style Selector="^:pointerover">
+      <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+    </Style>
+    <Style Selector="^:selected">
+      <Setter Property="Background" Value="{DynamicResource SheetBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_Root">
+      <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type c:LegendEntry}" TargetType="c:LegendEntry">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="10,6" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Root" Background="{TemplateBinding Background}" CornerRadius="6"
+                Padding="{TemplateBinding Padding}" BorderThickness="2" BorderBrush="Transparent">
+          <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+            <Border Grid.RowSpan="2" Width="14" Height="3" CornerRadius="1.5" Margin="0,0,10,0"
+                    Background="{TemplateBinding Swatch}" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Text="{TemplateBinding Title}" TextTrimming="CharacterEllipsis" />
+            <TextBlock Grid.Column="1" Grid.Row="1" Classes="caption" Text="{TemplateBinding Subtitle}" TextTrimming="CharacterEllipsis" />
+            <TextBlock Grid.Column="2" Grid.RowSpan="2" Classes="figure" Text="{TemplateBinding ValueText}"
+                       VerticalAlignment="Center" Margin="12,0,0,0" />
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^:pointerover">
+      <Setter Property="Background" Value="{DynamicResource SunkenBrush}" />
+    </Style>
+    <Style Selector="^:unchecked /template/ Border#PART_Root > Grid">
+      <Setter Property="Opacity" Value="0.4" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_Root">
+      <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

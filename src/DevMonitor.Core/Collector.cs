@@ -9,7 +9,7 @@ public sealed class Collector(
     Database database,
     ClaudeUsageClient claude,
     GitHubActionsClient github,
-    ISensorSource? sensors,
+    Func<ISensorSource>? createSensors,
     Settings settings)
 {
     public static readonly TimeSpan SensorInterval = TimeSpan.FromSeconds(5);
@@ -19,14 +19,17 @@ public sealed class Collector(
 
     readonly SnapshotStore snapshots = new(database);
     readonly SensorStore sensorStore = new(database);
+    volatile ISensorSource? sensors;
     DateTimeOffset lastAggregate = DateTimeOffset.MinValue;
+
+    public Settings Settings { get; set; } = settings;
 
     public SourceState<ClaudeUsage> Claude { get; private set; } = new(ClaudeInterval);
     public SourceState<ActionsUsage> GitHub { get; private set; } = new(GitHubInterval);
     public SourceState<IReadOnlyList<SensorReading>> Sensors { get; private set; } = new(SensorInterval);
 
     public IReadOnlyList<string> SensorProblems =>
-        sensors?.Problems ?? ["Hardware sensors are not supported on this platform."];
+        createSensors is null ? ["Hardware sensors are not supported on this platform."] : sensors?.Problems ?? [];
 
     public event Action? Changed;
 
@@ -42,8 +45,8 @@ public sealed class Collector(
             Loop(ClaudeInterval, PollClaudeAsync, cancellationToken),
             Loop(GitHubInterval, PollGitHubAsync, cancellationToken),
         };
-        if (sensors is not null)
-            loops.Add(Loop(SensorInterval, _ => PollSensors(), cancellationToken));
+        if (createSensors is not null)
+            loops.Add(Task.Run(() => RunSensorsAsync(createSensors, cancellationToken), cancellationToken));
         return Task.WhenAll(loops);
     }
 
@@ -56,7 +59,23 @@ public sealed class Collector(
             while (await timer.WaitForNextTickAsync(cancellationToken));
         }, cancellationToken);
 
-    async Task PollClaudeAsync(CancellationToken cancellationToken)
+    async Task RunSensorsAsync(Func<ISensorSource> create, CancellationToken cancellationToken)
+    {
+        try
+        {
+            sensors = create();
+        }
+        catch (Exception exception)
+        {
+            Sensors = Sensors.Failed(exception.Message, DateTimeOffset.UtcNow);
+            Changed?.Invoke();
+            return;
+        }
+        using (sensors)
+            await Loop(SensorInterval, _ => PollSensors(), cancellationToken);
+    }
+
+    public async Task PollClaudeAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -71,7 +90,7 @@ public sealed class Collector(
         Changed?.Invoke();
     }
 
-    async Task PollGitHubAsync(CancellationToken cancellationToken)
+    public async Task PollGitHubAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -91,8 +110,9 @@ public sealed class Collector(
         var now = DateTimeOffset.UtcNow;
         try
         {
-            var readings = sensors!.Read().Where(reading => settings.IsRecorded(reading.Sensor)).ToList();
-            sensorStore.Record(now, readings);
+            var readings = sensors!.Read();
+            var current = Settings;
+            sensorStore.Record(now, readings.Where(reading => current.IsRecorded(reading.Sensor)));
             if (now - lastAggregate >= AggregateInterval)
             {
                 sensorStore.Aggregate(now);

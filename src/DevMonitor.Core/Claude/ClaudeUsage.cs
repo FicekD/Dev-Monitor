@@ -3,7 +3,11 @@ using System.Text.Json;
 
 namespace DevMonitor.Core.Claude;
 
-public sealed record UsageWindow(double? Utilization, DateTimeOffset? ResetsAt);
+public sealed record UsageWindow(double? Utilization, DateTimeOffset? ResetsAt)
+{
+    public double? ElapsedFraction(TimeSpan length, DateTimeOffset now) =>
+        ResetsAt is { } end ? Math.Clamp(1 - (end - now) / length, 0, 1) : null;
+}
 
 public sealed record ClaudeUsage(
     DateTimeOffset FetchedAt,
@@ -11,6 +15,9 @@ public sealed record ClaudeUsage(
     UsageWindow? SevenDay,
     IReadOnlyDictionary<string, UsageWindow> ModelWindows)
 {
+    public static readonly TimeSpan FiveHourLength = TimeSpan.FromHours(5);
+    public static readonly TimeSpan WeekLength = TimeSpan.FromDays(7);
+
     const string ModelWindowPrefix = "seven_day_";
 
     public static ClaudeUsage Parse(string json, DateTimeOffset fetchedAt)

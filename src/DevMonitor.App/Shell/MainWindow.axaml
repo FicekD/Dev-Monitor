@@ -1,0 +1,38 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="using:DevMonitor.App.Controls"
+        x:Class="DevMonitor.App.Shell.MainWindow"
+        Title="Dev Monitor"
+        Icon="/Assets/Icon.ico"
+        Width="1080" Height="720"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1">
+  <LayoutTransformControl x:Name="Scaler">
+    <Grid RowDefinitions="36,*" ColumnDefinitions="220,*">
+      <Border x:Name="TitleBar" Grid.ColumnSpan="2" Background="Transparent" />
+      <StackPanel Orientation="Horizontal" Spacing="10" Margin="24,0,0,0" IsHitTestVisible="False" VerticalAlignment="Center">
+        <Image Source="/Assets/Icon.ico" Width="18" Height="18" VerticalAlignment="Center" />
+        <TextBlock Text="Dev Monitor" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+        <c:CaptionButton x:Name="MinimizeButton" Icon="{StaticResource IconMinimize}" />
+        <c:CaptionButton x:Name="MaximizeButton" Icon="{StaticResource IconMaximize}" />
+        <c:CaptionButton x:Name="CloseButton" Classes="close" Icon="{StaticResource IconClose}" />
+      </StackPanel>
+
+      <DockPanel Grid.Row="1" Margin="12,14,12,16">
+        <StackPanel x:Name="FooterNav" DockPanel.Dock="Bottom" Spacing="2" />
+        <StackPanel x:Name="MainNav" Spacing="2" />
+      </DockPanel>
+      <Border Grid.Row="1" Grid.Column="1" Classes="sheet">
+        <TransitioningContentControl x:Name="Host">
+          <TransitioningContentControl.PageTransition>
+            <CrossFade Duration="0:0:0.16" />
+          </TransitioningContentControl.PageTransition>
+        </TransitioningContentControl>
+      </Border>
+    </Grid>
+  </LayoutTransformControl>
+</Window>

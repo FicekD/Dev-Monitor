@@ -59,17 +59,13 @@ static class StorageCommands
         if (seconds is { } limit)
             cancellation.CancelAfter(TimeSpan.FromSeconds(limit));
 
-        var database = new Database(AppPaths.Database);
-        using var sensors = new LhmSensorSource();
         var collector = new Collector(
-            database,
+            new Database(AppPaths.Database),
             new ClaudeUsageClient(SourceCommands.Http, AppPaths.ClaudeCredentials),
             new GitHubActionsClient(SourceCommands.Http, new CredentialStore()),
-            sensors,
+            () => new LhmSensorSource(),
             Settings.Load(AppPaths.Settings));
 
-        foreach (var problem in collector.SensorProblems)
-            Console.WriteLine($"! {problem}");
         var gate = new object();
         collector.Changed += () =>
         {
@@ -79,7 +75,7 @@ static class StorageCommands
                     ? $"{usage.FiveHour?.Utilization:0.#}% / {usage.SevenDay?.Utilization:0.#}%"
                     : "-";
                 var github = collector.GitHub.Value is { } actions ? $"${actions.Amount:0.00}" : "-";
-                var recorded = collector.Sensors.Value?.Count.ToString() ?? "-";
+                var recorded = collector.Sensors.Value?.Count(reading => collector.Settings.IsRecorded(reading.Sensor)).ToString() ?? "-";
                 Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] claude {claude} | github {github} | sensors {recorded} recorded");
                 foreach (var (name, error) in new[]
                 {
@@ -99,6 +95,8 @@ static class StorageCommands
         catch (OperationCanceledException)
         {
         }
+        foreach (var problem in collector.SensorProblems)
+            Console.WriteLine($"! {problem}");
         Console.WriteLine($"Claude:  {Format.State(collector.Claude)}");
         Console.WriteLine($"GitHub:  {Format.State(collector.GitHub)}");
         Console.WriteLine($"Sensors: {Format.State(collector.Sensors)}");

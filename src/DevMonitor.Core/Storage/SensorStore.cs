@@ -7,6 +7,8 @@ public sealed record StoredSensor(long Id, SensorInfo Info);
 
 public readonly record struct HistoryPoint(DateTimeOffset Time, double Min, double Avg, double Max);
 
+public readonly record struct SensorSummary(double Min, double Avg, double Max);
+
 public sealed class SensorStore(Database database)
 {
     public static readonly TimeSpan RawRetention = TimeSpan.FromDays(7);
@@ -99,6 +101,26 @@ public sealed class SensorStore(Database database)
                 UNION ALL SELECT MIN(ts) FROM readings WHERE sensor_id = $id)
             """, ("$id", sensorId));
         return command.ExecuteScalar() is long first ? DateTimeOffset.FromUnixTimeSeconds(first) : null;
+    }
+
+    public IReadOnlyDictionary<long, SensorSummary> Summaries(DateTimeOffset from, DateTimeOffset to)
+    {
+        using var connection = database.Open();
+        using var command = Database.Command(connection, """
+            SELECT sensor_id, MIN(min), AVG(avg), MAX(max) FROM (
+                SELECT sensor_id, min, avg, max FROM readings_minute
+                WHERE sensor_id IN (SELECT id FROM sensors) AND ts >= $from AND ts < $to
+                UNION ALL
+                SELECT sensor_id, value, value, value FROM readings
+                WHERE sensor_id IN (SELECT id FROM sensors) AND ts >= $from AND ts < $to
+                  AND ts >= COALESCE((SELECT value FROM meta WHERE key = 'readings_minute_until'), 0))
+            GROUP BY sensor_id
+            """, ("$from", from.ToUnixTimeSeconds()), ("$to", to.ToUnixTimeSeconds()));
+        using var reader = command.ExecuteReader();
+        var summaries = new Dictionary<long, SensorSummary>();
+        while (reader.Read())
+            summaries[reader.GetInt64(0)] = new(reader.GetDouble(1), reader.GetDouble(2), reader.GetDouble(3));
+        return summaries;
     }
 
     public IReadOnlyList<HistoryPoint> History(long sensorId, DateTimeOffset from, DateTimeOffset to, int points = 1000)

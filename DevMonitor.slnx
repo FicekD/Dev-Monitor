@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/DevMonitor.App/DevMonitor.App.csproj" />
     <Project Path="src/DevMonitor.Cli/DevMonitor.Cli.csproj" />
     <Project Path="src/DevMonitor.Core/DevMonitor.Core.csproj" />
     <Project Path="src/DevMonitor.Windows/DevMonitor.Windows.csproj" />

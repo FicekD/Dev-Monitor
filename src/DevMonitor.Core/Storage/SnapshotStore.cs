@@ -5,8 +5,45 @@ using Microsoft.Data.Sqlite;
 
 namespace DevMonitor.Core.Storage;
 
+public readonly record struct ClaudePoint(DateTimeOffset Time, double? FiveHour, double? SevenDay);
+
+public readonly record struct GitHubPoint(DateTimeOffset Time, double Amount);
+
 public sealed class SnapshotStore(Database database)
 {
+    public IReadOnlyList<ClaudePoint> ClaudeHistory(DateTimeOffset from, DateTimeOffset to, int points = 1000)
+    {
+        var bucket = Math.Max((long)Collector.ClaudeInterval.TotalSeconds, (long)(to - from).TotalSeconds / Math.Max(1, points));
+        using var connection = database.Open();
+        using var command = Database.Command(connection, $"""
+            SELECT ts / {bucket} * {bucket} AS bucket, MAX(five_hour), MAX(seven_day) FROM claude_snapshots
+            WHERE ts >= $from AND ts < $to GROUP BY bucket ORDER BY bucket
+            """, ("$from", from.ToUnixTimeSeconds()), ("$to", to.ToUnixTimeSeconds()));
+        using var reader = command.ExecuteReader();
+        var history = new List<ClaudePoint>();
+        while (reader.Read())
+            history.Add(new(DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)),
+                reader.IsDBNull(1) ? null : reader.GetDouble(1),
+                reader.IsDBNull(2) ? null : reader.GetDouble(2)));
+        return history;
+    }
+
+    public IReadOnlyList<GitHubPoint> GitHubHistory(DateTimeOffset from, DateTimeOffset to)
+    {
+        using var connection = database.Open();
+        using var command = Database.Command(connection,
+            "SELECT ts, skus FROM github_snapshots WHERE ts >= $from AND ts < $to ORDER BY ts",
+            ("$from", from.ToUnixTimeSeconds()), ("$to", to.ToUnixTimeSeconds()));
+        using var reader = command.ExecuteReader();
+        var history = new List<GitHubPoint>();
+        while (reader.Read())
+        {
+            var skus = JsonSerializer.Deserialize<Dictionary<string, SkuUsage>>(reader.GetString(1)) ?? [];
+            history.Add(new(DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(0)), skus.Values.Sum(sku => sku.Amount)));
+        }
+        return history;
+    }
+
     public void Save(ClaudeUsage usage)
     {
         using var connection = database.Open();
