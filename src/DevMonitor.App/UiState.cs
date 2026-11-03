@@ -13,9 +13,12 @@ public sealed class UiState
     public int? X { get; set; }
     public int? Y { get; set; }
     public bool Maximized { get; set; }
-    public string Page { get; set; } = "overview";
+    public string Page { get; set; } = "dashboard";
     public Dictionary<string, string> Ranges { get; set; } = [];
     public HashSet<string> HiddenSeries { get; set; } = [];
+    public bool LogOpen { get; set; }
+    public double LogHeight { get; set; } = 240;
+    public string LogLevel { get; set; } = "Information";
 
     public static UiState Load()
     {

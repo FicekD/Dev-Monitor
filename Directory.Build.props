@@ -1,5 +1,8 @@
 <Project>
+  <Import Project="$(MSBuildThisFileDirectory)version.props" />
   <PropertyGroup>
+    <Product>Dev Monitor</Product>
+    <Authors>Dominik Ficek</Authors>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>

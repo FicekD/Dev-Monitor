@@ -28,12 +28,13 @@ public sealed class Meter : Control
 
     public override void Render(DrawingContext context)
     {
-        const double barHeight = 10;
+        const double barHeight = 14;
+        const double notch = 5;
         var width = Bounds.Width;
         if (width < barHeight)
             return;
         var bar = new Rect(0, (Bounds.Height - barHeight) / 2, width, barHeight);
-        context.DrawRectangle(TrackBrush, null, bar, 4, 4);
+        context.DrawRectangle(TrackBrush, null, bar, 5, 5);
 
         var value = Math.Clamp(Value, 0, 1);
         if (value > 0)
@@ -44,13 +45,26 @@ public sealed class Meter : Control
                 Severity.Warning => WarningBrush,
                 _ => FillBrush,
             };
-            context.DrawRectangle(fill, null, bar.WithWidth(Math.Max(barHeight, width * value)), 4, 4);
+            context.DrawRectangle(fill, null, bar.WithWidth(Math.Max(barHeight, width * value)), 5, 5);
         }
 
         if (!double.IsNaN(Pace))
         {
-            var x = Math.Round(width * Math.Clamp(Pace, 0, 1));
-            context.DrawRectangle(PaceBrush, null, new Rect(Math.Clamp(x - 1, 0, width - 2), 0, 2, Bounds.Height), 1, 1);
+            var x = Math.Clamp(Math.Round(width * Math.Clamp(Pace, 0, 1)), notch, width - notch);
+            context.DrawRectangle(PaceBrush, null, new Rect(x - 1, bar.Top - 2, 2, barHeight + 4));
+            context.DrawGeometry(PaceBrush, null, Triangle(x, bar.Top - 2, -notch));
+            context.DrawGeometry(PaceBrush, null, Triangle(x, bar.Bottom + 2, notch));
         }
+    }
+
+    static StreamGeometry Triangle(double x, double tipY, double height)
+    {
+        var geometry = new StreamGeometry();
+        using var draw = geometry.Open();
+        draw.BeginFigure(new Point(x, tipY), true);
+        draw.LineTo(new Point(x - height * 0.9, tipY + height));
+        draw.LineTo(new Point(x + height * 0.9, tipY + height));
+        draw.EndFigure(true);
+        return geometry;
     }
 }

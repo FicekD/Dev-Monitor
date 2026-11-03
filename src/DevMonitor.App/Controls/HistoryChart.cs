@@ -50,6 +50,8 @@ public sealed class HistoryChart : UserControl
     readonly Grid layout = new();
     readonly ScrollViewer legendScroller;
     readonly WrapPanel legend = new();
+    readonly StackPanel bulkActions = new() { Orientation = Avalonia.Layout.Orientation.Horizontal, Margin = new Thickness(2, 0, 0, 4) };
+    bool bulkChange;
     readonly Dictionary<string, LegendEntry> entries = [];
     readonly ISet<string> hidden;
     IReadOnlyList<ChartLine> lines = [];
@@ -68,7 +70,12 @@ public sealed class HistoryChart : UserControl
         var overlay = new Canvas { IsHitTestVisible = false, Children = { selection } };
         var plot = new Panel { Children = { chart, overlay } };
 
-        legendScroller = new ScrollViewer { Content = legend };
+        var showAll = new Button { Content = "All", Classes = { "link" } };
+        showAll.Click += (_, _) => SetAllVisible(true);
+        var showNone = new Button { Content = "None", Classes = { "link" } };
+        showNone.Click += (_, _) => SetAllVisible(false);
+        bulkActions.Children.AddRange([showAll, showNone]);
+        legendScroller = new ScrollViewer { Content = new StackPanel { Children = { bulkActions, legend } } };
         layout.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
         layout.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(0)));
         layout.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
@@ -178,12 +185,23 @@ public sealed class HistoryChart : UserControl
                     hidden.Remove(key);
                 else
                     hidden.Add(key);
-                Render();
+                if (!bulkChange)
+                    Render();
             };
             entries[key] = entry;
             legend.Children.Add(entry);
         }
         legendScroller.IsVisible = lines.Count > 1;
+        bulkActions.IsVisible = lines.Count > 2;
+    }
+
+    void SetAllVisible(bool visible)
+    {
+        bulkChange = true;
+        foreach (var entry in entries.Values)
+            entry.IsChecked = visible;
+        bulkChange = false;
+        Render();
     }
 
     void ArrangeLegend()

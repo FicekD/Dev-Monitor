@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "App": {
+      "commandName": "Project"
+    },
+    "Elevated": {
+      "commandName": "Project",
+      "commandLineArgs": "--elevate"
+    },
+    "Tray": {
+      "commandName": "Project",
+      "commandLineArgs": "--elevate --tray"
+    }
+  }
+}

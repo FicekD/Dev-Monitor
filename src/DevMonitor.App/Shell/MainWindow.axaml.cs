@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Threading;
 using DevMonitor.App.Controls;
 using DevMonitor.Windows;
 
@@ -26,7 +27,7 @@ public partial class MainWindow : Window
 
         MinimizeButton.Click += (_, _) => WindowState = WindowState.Minimized;
         MaximizeButton.Click += (_, _) => ToggleMaximized();
-        CloseButton.Click += (_, _) => Close();
+        CloseButton.Click += (_, _) => Dispatcher.UIThread.Post(Close, DispatcherPriority.Background);
         TitleBar.PointerPressed += (_, e) =>
         {
             if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
@@ -37,6 +38,7 @@ public partial class MainWindow : Window
                 BeginMoveDrag(e);
         };
         AddNavigation(MainNav, Pages.Main);
+        AddLogToggle();
         AddNavigation(FooterNav, Pages.Footer);
 
         var pages = Pages.Main.Concat(Pages.Footer).ToList();
@@ -62,18 +64,37 @@ public partial class MainWindow : Window
             {
                 Content = page.Title,
                 Icon = this.FindResource(page.IconKey) as Geometry,
-                GroupName = "navigation",
             };
             button.IsCheckedChanged += (_, _) =>
             {
                 if (button.IsChecked != true)
                     return;
+                foreach (var other in buttons.Values.Where(other => other != button))
+                    other.IsChecked = false;
                 services.Ui.Page = page.Key;
                 Host.Content = page.Create(services);
             };
             buttons[page.Key] = button;
             panel.Children.Add(button);
         }
+    }
+
+    void AddLogToggle()
+    {
+        var toggle = new RailButton { Content = "Log", Icon = this.FindResource("IconLog") as Geometry };
+        toggle.IsCheckedChanged += (_, _) => ShowLog(toggle.IsChecked == true);
+        toggle.IsChecked = services.Ui.LogOpen;
+        FooterNav.Children.Add(toggle);
+    }
+
+    void ShowLog(bool open)
+    {
+        if (!open && LogHost.Child is not null)
+            services.Ui.LogHeight = SheetGrid.RowDefinitions[2].ActualHeight;
+        services.Ui.LogOpen = open;
+        LogHost.Child = open ? new LogConsole(services.Ui) : null;
+        LogHost.IsVisible = LogSplitter.IsVisible = open;
+        SheetGrid.RowDefinitions[2].Height = new GridLength(open ? Math.Max(120, services.Ui.LogHeight) : 0);
     }
 
     void ToggleMaximized() =>
@@ -121,6 +142,8 @@ public partial class MainWindow : Window
         base.OnClosing(e);
         var ui = services.Ui;
         ui.Maximized = WindowState == WindowState.Maximized;
+        if (LogHost.Child is not null)
+            ui.LogHeight = SheetGrid.RowDefinitions[2].ActualHeight;
         if (TryGetPlatformHandle()?.Handle is { } handle && WindowPlacement.NormalBounds(handle) is var (x, y, width, height))
         {
             (ui.X, ui.Y) = (x, y);

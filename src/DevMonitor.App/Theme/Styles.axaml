@@ -98,6 +98,61 @@
     <Setter Property="Padding" Value="14,6" />
   </Style>
 
+  <Style Selector="Button.link">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="8,4" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+  <Style Selector="Button.link:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource SunkenBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+  </Style>
+  <Style Selector="Button.link:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource SunkenBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+  </Style>
+
+  <Style Selector="Border.console">
+    <Setter Property="BorderThickness" Value="0,1,0,0" />
+    <Setter Property="BorderBrush" Value="{DynamicResource RuleBrush}" />
+  </Style>
+  <Style Selector="GridSplitter.console">
+    <Setter Property="Height" Value="6" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="ResizeDirection" Value="Rows" />
+  </Style>
+  <Style Selector="ListBox.log">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="ItemContainerTheme" Value="{DynamicResource LogLineTheme}" />
+  </Style>
+  <Style Selector="Grid.log-row TextBlock">
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
+  </Style>
+  <Style Selector="Grid.log-row TextBlock.log-time">
+    <Setter Property="FontFeatures" Value="+tnum" />
+  </Style>
+  <Style Selector="Grid.log-row SelectableTextBlock.log-message">
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+  </Style>
+  <Style Selector="Grid.log-row.warning TextBlock.log-level">
+    <Setter Property="Foreground" Value="{DynamicResource WarningTextBrush}" />
+  </Style>
+  <Style Selector="Grid.log-row.error TextBlock.log-level">
+    <Setter Property="Foreground" Value="{DynamicResource CriticalTextBrush}" />
+  </Style>
+  <Style Selector="Grid.log-row.error SelectableTextBlock.log-message">
+    <Setter Property="Foreground" Value="{DynamicResource CriticalTextBrush}" />
+  </Style>
+  <Style Selector="Grid.log-row.debug SelectableTextBlock.log-message">
+    <Setter Property="Foreground" Value="{DynamicResource InkFaintBrush}" />
+  </Style>
+
   <Style Selector="ToolTip">
     <Setter Property="FontFamily" Value="{DynamicResource TextFont}" />
   </Style>

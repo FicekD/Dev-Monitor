@@ -3,7 +3,7 @@ using Avalonia.Layout;
 using DevMonitor.App.Claude;
 using DevMonitor.App.GitHub;
 using DevMonitor.App.Hardware;
-using DevMonitor.App.Overview;
+using DevMonitor.App.Dashboard;
 using DevMonitor.App.Configuration;
 
 namespace DevMonitor.App.Shell;
@@ -14,8 +14,8 @@ public static class Pages
 {
     public static readonly IReadOnlyList<PageDefinition> Main =
     [
-        new("overview", "Overview", "IconOverview", services => new OverviewPage(services)),
-        new("claude", "Claude", "IconLimits", services => new ClaudePage(services)),
+        new("dashboard", "Dashboard", "IconDashboard", services => new DashboardPage(services)),
+        new("claude", "Claude", "IconClaude", services => new ClaudePage(services)),
         new("github", "GitHub Actions", "IconActions", services => new GitHubPage(services)),
         new("hardware", "Hardware", "IconHardware", services => new HardwarePage(services)),
     ];

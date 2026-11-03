@@ -3,6 +3,7 @@ using DevMonitor.Core.Claude;
 using DevMonitor.Core.GitHub;
 using DevMonitor.Core.Storage;
 using DevMonitor.Windows;
+using Serilog;
 
 namespace DevMonitor.App;
 
@@ -42,6 +43,7 @@ public sealed class AppServices : IDisposable
         var settings = change(Settings);
         settings.Save(AppPaths.Settings);
         Collector.Settings = settings;
+        Log.ForContext<AppServices>().Information("Settings changed: {@Settings}", settings);
         SettingsChanged?.Invoke();
     }
 

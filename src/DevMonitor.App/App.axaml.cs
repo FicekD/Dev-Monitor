@@ -7,8 +7,10 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using DevMonitor.App.Shell;
 using DevMonitor.Core;
+using DevMonitor.Windows;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
+using Serilog;
 using SkiaSharp;
 
 namespace DevMonitor.App;
@@ -18,6 +20,7 @@ public partial class App : Application
     AppServices? services;
     MainWindow? window;
     TrayIcon? tray;
+    IClassicDesktopStyleApplicationLifetime? lifetime;
 
     public override void Initialize() => AvaloniaXamlLoader.Load(this);
 
@@ -25,6 +28,7 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            lifetime = desktop;
             using (var font = AssetLoader.Open(new Uri("avares://DevMonitor/Assets/Fonts/Barlow-Medium.ttf")))
             {
                 var typeface = SKTypeface.FromStream(font);
@@ -36,13 +40,31 @@ public partial class App : Application
             services.SettingsChanged += ApplyTheme;
             CreateTray(desktop);
             services.Collector.Changed += () => Dispatcher.UIThread.Post(UpdateTray);
-            Program.Instance?.Activated += () => Dispatcher.UIThread.Post(OpenWindow);
+            WatchInstance();
             desktop.Exit += (_, _) => services.Dispose();
 
             if (!(desktop.Args ?? []).Contains("--tray"))
                 OpenWindow();
         }
         base.OnFrameworkInitializationCompleted();
+    }
+
+    void WatchInstance() => Program.Instance?.Activated += () => Dispatcher.UIThread.Post(OpenWindow);
+
+    public bool RestartElevated()
+    {
+        Program.Instance?.Dispose();
+        Program.Instance = null;
+        if (Elevation.Start(Environment.ProcessPath!, "") is null)
+        {
+            Log.Information("Restarting as administrator was declined");
+            if (Program.TryAcquireInstance())
+                WatchInstance();
+            return false;
+        }
+        Log.Information("Restarting as administrator");
+        lifetime!.Shutdown();
+        return true;
     }
 
     void ApplyTheme() => RequestedThemeVariant = services!.Settings.Theme switch

@@ -28,11 +28,22 @@ public sealed class Notice : TemplatedControl
     }
 }
 
-public sealed class NavButton : RadioButton
+public class RailButton : ToggleButton
 {
-    public static readonly StyledProperty<Geometry?> IconProperty = AvaloniaProperty.Register<NavButton, Geometry?>(nameof(Icon));
+    public static readonly StyledProperty<Geometry?> IconProperty = AvaloniaProperty.Register<RailButton, Geometry?>(nameof(Icon));
 
     public Geometry? Icon { get => GetValue(IconProperty); set => SetValue(IconProperty, value); }
+
+    protected override Type StyleKeyOverride => typeof(RailButton);
+}
+
+public sealed class NavButton : RailButton
+{
+    protected override void OnClick()
+    {
+        if (IsChecked != true)
+            base.OnClick();
+    }
 }
 
 public sealed class CaptionButton : Button

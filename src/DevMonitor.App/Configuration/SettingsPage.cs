@@ -14,9 +14,10 @@ public sealed class SettingsPage : UserControl
     public SettingsPage(AppServices services) =>
         Content = Pages.Layout("Settings", null,
             Appearance(services),
+            new StartupSection(),
             GitHubToken(services),
             new RecordedSensorsView(services),
-            DataFolder());
+            About());
 
     static readonly int[] Scales = [50, 75, 100, 125, 150];
 
@@ -79,7 +80,7 @@ public sealed class SettingsPage : UserControl
         return new Section { Title = "GitHub", Content = rows };
     }
 
-    static Section DataFolder()
+    static Section About()
     {
         var open = new Button { Content = "Open folder" };
         open.Click += (_, _) =>
@@ -90,6 +91,9 @@ public sealed class SettingsPage : UserControl
         var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 16 };
         row.Children.Add(new TextBlock { Text = AppPaths.DataDirectory, Classes = { "muted" }, VerticalAlignment = VerticalAlignment.Center });
         row.Children.Add(open);
-        return new Section { Title = "Data", Content = new FieldRow { Label = "Folder", Content = row } };
+        var rows = new StackPanel { Classes = { "rows" } };
+        rows.Children.Add(new FieldRow { Label = "Version", Content = new TextBlock { Text = Program.Version, Classes = { "muted" } } });
+        rows.Children.Add(new FieldRow { Label = "Data folder", Content = row });
+        return new Section { Title = "About", Content = rows };
     }
 }

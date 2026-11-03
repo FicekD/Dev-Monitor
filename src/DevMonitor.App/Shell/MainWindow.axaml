@@ -26,12 +26,16 @@
         <StackPanel x:Name="FooterNav" DockPanel.Dock="Bottom" Spacing="2" />
         <StackPanel x:Name="MainNav" Spacing="2" />
       </DockPanel>
-      <Border Grid.Row="1" Grid.Column="1" Classes="sheet">
-        <TransitioningContentControl x:Name="Host">
-          <TransitioningContentControl.PageTransition>
-            <CrossFade Duration="0:0:0.16" />
-          </TransitioningContentControl.PageTransition>
-        </TransitioningContentControl>
+      <Border Grid.Row="1" Grid.Column="1" Classes="sheet" ClipToBounds="True">
+        <Grid x:Name="SheetGrid" RowDefinitions="*,Auto,0">
+          <TransitioningContentControl x:Name="Host">
+            <TransitioningContentControl.PageTransition>
+              <CrossFade Duration="0:0:0.16" />
+            </TransitioningContentControl.PageTransition>
+          </TransitioningContentControl>
+          <GridSplitter x:Name="LogSplitter" Grid.Row="1" Classes="console" IsVisible="False" />
+          <Border x:Name="LogHost" Grid.Row="2" Classes="console" IsVisible="False" />
+        </Grid>
       </Border>
     </Grid>
   </LayoutTransformControl>

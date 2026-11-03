@@ -9,6 +9,8 @@ public static class AppPaths
 
     public static string Settings => Path.Combine(DataDirectory, "settings.json");
 
+    public static string Logs => Path.Combine(DataDirectory, "logs");
+
     public static string ClaudeCredentials => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".claude", ".credentials.json");
 }

@@ -77,11 +77,13 @@
   <GridLength x:Key="DetailColumnWidth">148</GridLength>
   <x:Double x:Key="ContentMaxWidth">960</x:Double>
 
-  <StreamGeometry x:Key="IconOverview">M3.5,3.5 H8.5 V8.5 H3.5 Z M11.5,3.5 H16.5 V8.5 H11.5 Z M3.5,11.5 H8.5 V16.5 H3.5 Z M11.5,11.5 H16.5 V16.5 H11.5 Z</StreamGeometry>
-  <StreamGeometry x:Key="IconLimits">M3,14.5 A7,7 0 1 1 17,14.5 M10,14.5 L13.25,9</StreamGeometry>
+  <StreamGeometry x:Key="IconDashboard">M3,14.5 A7,7 0 1 1 17,14.5 M10,14.5 L13.25,9</StreamGeometry>
+  <StreamGeometry x:Key="IconClaude">M9,3.5 C9.5,7.2 11.3,9 15,9.5 C11.3,10 9.5,11.8 9,15.5 C8.5,11.8 6.7,10 3,9.5 C6.7,9 8.5,7.2 9,3.5 Z M15,2.5 V6.5 M13,4.5 H17 M15.5,13.5 V17 M13.75,15.25 H17.25</StreamGeometry>
+  <StreamGeometry x:Key="IconCheck">M3,7.5 L6,10.5 L11,4</StreamGeometry>
   <StreamGeometry x:Key="IconActions">M10,2.75 A7.25,7.25 0 1 1 9.99,2.75 Z M8.25,7 L13,10 L8.25,13 Z</StreamGeometry>
   <StreamGeometry x:Key="IconHardware">M8.5,4 A1.5,1.5 0 0 1 11.5,4 V11.2 A3.25,3.25 0 1 1 8.5,11.2 Z M10,8 V13.5</StreamGeometry>
   <StreamGeometry x:Key="IconSettings">M3,6 H17 M3,14 H17 M7,4 V8 M13,12 V16</StreamGeometry>
+  <StreamGeometry x:Key="IconLog">M4,4.5 H16 M4,8.5 H16 M4,12.5 H12 M4,16.5 H9</StreamGeometry>
   <StreamGeometry x:Key="IconChevron">M7.5,4.5 L13,10 L7.5,15.5</StreamGeometry>
   <StreamGeometry x:Key="IconMinimize">M0,5.5 H10</StreamGeometry>
   <StreamGeometry x:Key="IconMaximize">M0.5,0.5 H9.5 V9.5 H0.5 Z</StreamGeometry>

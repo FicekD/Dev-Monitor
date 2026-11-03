@@ -11,8 +11,10 @@ Personal tray dashboard for Claude usage limits, GitHub Actions minutes and hard
 ```bash
 rtk dotnet build
 rtk dotnet run --project src/DevMonitor.App
+rtk dotnet run --project src/DevMonitor.App --launch-profile Elevated   # relaunches elevated through UAC, needed for sensors and autostart
 rtk dotnet run --project src/DevMonitor.Cli -- <command>   # debugging CLI, run without a command for help
 rtk dotnet publish src/DevMonitor.App -c Release -r win-x64 --self-contained -p:PublishSingleFile=true
+powershell -File scripts/installer.ps1   # installer in build/installer, version from version.props
 ```
 
 ## Rules
@@ -24,4 +26,5 @@ rtk dotnet publish src/DevMonitor.App -c Release -r win-x64 --self-contained -p:
 - The window is created on open and disposed on close. Do not keep view models, charts or history in memory while it is closed.
 - Sensors need administrator rights and the PawnIO driver. When they are unavailable the app must still run and say why sensor data is missing.
 - Prefer code-behind or simple view models over MVVM frameworks and heavy abstractions. Add a NuGet package only after asking.
+- Log through Serilog (`Log.ForContext<T>()`). Log state changes and failures, not every poll.
 - Package versions live only in `Directory.Packages.props`; project files reference packages without a version. Build output goes to `./build` through `ArtifactsPath` in `Directory.Build.props`, for example `build/bin/DevMonitor.Cli/debug/devmon.exe`.
